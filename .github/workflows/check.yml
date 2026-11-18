@@ -1,0 +1,9 @@
+name: Check
+on:
+  pull_request:
+  merge_group:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "event=$GITHUB_EVENT_NAME actor=$GITHUB_ACTOR"

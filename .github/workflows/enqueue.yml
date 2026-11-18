@@ -1,0 +1,19 @@
+name: Enqueue with GITHUB_TOKEN
+on:
+  workflow_dispatch:
+    inputs:
+      pr:
+        required: true
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  enqueue:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ inputs.pr }}
+        run: |
+          id=$(gh api repos/$GITHUB_REPOSITORY/pulls/$PR --jq .node_id)
+          gh api graphql -f query='mutation($id:ID!){enqueuePullRequest(input:{pullRequestId:$id}){mergeQueueEntry{position state}}}' -f id="$id"
